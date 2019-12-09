@@ -33,9 +33,9 @@ public final class Interpreter {
                         }
 
                 }
-
             }
         }
+
         throw new IllegalArgumentException("Неверный литерал в строке - " + ((BinOpNode) n).getOp().getLine() +
                 ", позиция - " + ((BinOpNode) n).getOp().getColumn());
 
@@ -68,31 +68,32 @@ public final class Interpreter {
     }
 
     private boolean evalCondition(WhileNode s, Map<String, Integer> vars) {
-        ExprNode condition = s.getCondition();
-        if (condition != null) {
-            if (condition instanceof BinOpNode) {
-                int p1 = eval(((BinOpNode) condition).getLeft(), vars);
-                int p2 = eval(((BinOpNode) condition).getRight(), vars);
-                switch (((BinOpNode) condition).getOp().getType()) {
-                    case MORE:
-                        return p1 > p2;
-                    case LESS:
-                        return p1 < p2;
-                    case MOREEQUAL:
-                        return p1 >= p2;
-                    case LESSEQUAL:
-                        return p1 <= p2;
-                    case EQUAL:
-                        return p1 == p2;
-                    case NOTEQUAL:
-                        return p1 != p2;
-                    default:
-                        throw new RuntimeException("Неверное условие в цикле while." +
-                                " Строка - " + s.getToken().getLine() +
-                                " Столбец - " + s.getToken().getColumn());
+            ExprNode condition = s.getCondition();
+            if (condition != null) {
+                if (condition instanceof BinOpNode) {
+                    int p1 = eval(((BinOpNode) condition).getLeft(), vars);
+                    int p2 = eval(((BinOpNode) condition).getRight(), vars);
+                    switch (((BinOpNode) condition).getOp().getType()) {
+                        case MORE:
+                            return p1 > p2;
+                        case LESS:
+                            return p1 < p2;
+                        case MOREEQUAL:
+                            return p1 >= p2;
+                        case LESSEQUAL:
+                            return p1 <= p2;
+                        case EQUAL:
+                            return p1 == p2;
+                        case NOTEQUAL:
+                            return p1 != p2;
+                        default:
+                            throw new RuntimeException("Неверное условие в цикле while." +
+                                    " Строка - " + s.getToken().getLine() +
+                                    " Столбец - " + s.getToken().getColumn());
+                    }
                 }
             }
-        }
+
         throw new RuntimeException("Ожидалось условие в цикле while." +
                 " Строка - " + s.getToken().getLine() +
                 " Столбец - " + s.getToken().getColumn());

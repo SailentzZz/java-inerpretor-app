@@ -50,7 +50,7 @@ public class Parser {
         while (pos < tokens.size()) {
             StmtNode s = parseStatement();
             condition.add(s);
-}
+        }
         return condition;
     }
 
@@ -107,6 +107,22 @@ public class Parser {
                 e1 = new BinOpNode(t, e1, e2);
                 continue;
             }
+            break;
+        }
+        return e1;
+    }
+
+    private ExprNode incdec() {
+        ExprNode e1 = addeend();
+        Token t;
+        while (true) {
+            t = match();
+            if (t != null) {
+                ExprNode e2 = addeend();
+                e1 = new BinOpNode(t, e1, e2);
+                continue;
+            }
+
             break;
         }
         return e1;
