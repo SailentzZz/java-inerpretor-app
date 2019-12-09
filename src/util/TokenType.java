@@ -20,6 +20,7 @@ public enum TokenType {
     LESSEQUAL("<="),
     MORE(">"),
     LESS("<"),
+    TWOEQUAL("=="),
     EQUAL("="),
     NOTEQUAL("!="),
     SPACE("[ \t\r\n]+"),

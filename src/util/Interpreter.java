@@ -1,9 +1,6 @@
 package util;
 
-import com.sun.codemodel.internal.JWhileLoop;
-import com.sun.tools.javac.tree.Pretty;
 import node.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +79,7 @@ public final class Interpreter {
                             return p1 >= p2;
                         case LESSEQUAL:
                             return p1 <= p2;
-                        case EQUAL:
+                        case TWOEQUAL:
                             return p1 == p2;
                         case NOTEQUAL:
                             return p1 != p2;

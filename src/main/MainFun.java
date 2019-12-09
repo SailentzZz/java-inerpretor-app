@@ -1,8 +1,6 @@
 package main;
 
-import com.sun.tools.javac.parser.Tokens;
 import node.StmtNode;
-import sun.applet.resources.MsgAppletViewer;
 import token.Token;
 import util.Interpreter;
 import util.Lexeme;
@@ -10,18 +8,20 @@ import util.Parser;
 import util.TokenType;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class MainFun {
     public static void main(String[] args) {
-            String text = "x = 0;\n" +
+            String text = "x = -(-1) - 1;" +
+                    "while(x == 0) do" +
+                    "print(x);" +
+                    "x = 1;" +
+                    "done;";/*"x = -(1 + 1) + 1;\n" +
                     "while(x < 8) do\n" +
-                    "x = x * 2;\n" +
+                    "x = x + 2;\n" +
                     "print(x);\n" +
-                    "done;\n";
+                    "done;\n";*/
 
             Lexeme l = new Lexeme(text);
             List<Token> tokens = l.getLex();

@@ -2,8 +2,6 @@ package util;
 
 import node.*;
 import token.Token;
-
-import java.time.temporal.ValueRange;
 import java.util.*;
 
 public class Parser {
@@ -48,22 +46,21 @@ public class Parser {
     public List<StmtNode> parseProgramm() {
         List<StmtNode> condition = new ArrayList<>();
         while (pos < tokens.size()) {
-            StmtNode s = parseStatement();
+            StmtNode s = parseCondition();
             condition.add(s);
         }
         return condition;
     }
 
-    private StmtNode parseStatement() {
+    private StmtNode parseCondition() {
         Token t = match(TokenType.WHILE);
-
         if (t != null) {
-            ExprNode condition = parseCondition();
+            ExprNode condition = parseStatement();
             require(TokenType.DO);
             List<StmtNode> body = new ArrayList<>();
             while (match(TokenType.DONE) == null) {
                 if (pos < tokens.size()) {
-                    StmtNode s = parseStatement();
+                    StmtNode s = parseCondition();
                     body.add(s);
                 } else {
                     error("Ожидался DONE");
@@ -77,7 +74,7 @@ public class Parser {
         t = match(TokenType.PRINT);
         if (t != null) {
             if (match(TokenType.LPAR) != null) {
-                ExprNode body = parseCondition();
+                ExprNode body = parseStatement();
                 require(TokenType.RPAR);
                 require(TokenType.SEMICOLON);
                 return new PrintNode(t, body);
@@ -87,9 +84,11 @@ public class Parser {
         t = match(TokenType.ID);
         if (t != null) {
             if (match(TokenType.EQUAL) != null) {
-                ExprNode body = parse();
+                ExprNode body = parseStatement();
                 require(TokenType.SEMICOLON);
                 return new VariableNode(t, body);
+            } else if (match(TokenType.TWOEQUAL) != null) {
+                error("Ошибка присваивание сравнением");
             }
         }
 
@@ -97,13 +96,13 @@ public class Parser {
         return null;
     }
 
-    private ExprNode parse() {
-        ExprNode e1 = addeend();
+    private ExprNode AddSubExpression() {
+        ExprNode e1 = MulDivExpression();
         Token t;
         while (true) {
             t = match(TokenType.ADD, TokenType.SUB);
             if (t != null) {
-                ExprNode e2 = addeend();
+                ExprNode e2 = MulDivExpression();
                 e1 = new BinOpNode(t, e1, e2);
                 continue;
             }
@@ -112,29 +111,13 @@ public class Parser {
         return e1;
     }
 
-    private ExprNode incdec() {
-        ExprNode e1 = addeend();
-        Token t;
-        while (true) {
-            t = match();
-            if (t != null) {
-                ExprNode e2 = addeend();
-                e1 = new BinOpNode(t, e1, e2);
-                continue;
-            }
-
-            break;
-        }
-        return e1;
-    }
-
-    private ExprNode addeend() {
-        ExprNode e1 = comparison();
+    private ExprNode MulDivExpression() {
+        ExprNode e1 = multiparExpression();
         Token t;
         while (true) {
             t = match(TokenType.MUL, TokenType.DIV);
             if (t != null) {
-                ExprNode e2 = multiplier();
+                ExprNode e2 = multiparExpression();
                 e1 = new BinOpNode(t, e1, e2);
                 continue;
             }
@@ -143,17 +126,17 @@ public class Parser {
         return e1;
     }
 
-    private ExprNode multiplier() {
+    private ExprNode multiparExpression() {
         if (match(TokenType.LPAR) != null) {
-            ExprNode expNode = parse();
+            ExprNode expNode = parseStatement();
             require(TokenType.RPAR);
             return expNode;
         } else {
-            return elem();
+            return elemExpression();
         }
     }
 
-    private ExprNode elem() {
+    private ExprNode elemExpression() {
         Token num = match(TokenType.NUMBER);
         if (num != null) {
             return new NumberNode(num);
@@ -161,7 +144,7 @@ public class Parser {
 
         Token neg = match(TokenType.SUB);
         if (neg != null) {
-            ExprNode e1 = parse();
+            ExprNode e1 = MulDivExpression();
             return new NegativeNumberNode(e1);
         }
 
@@ -174,13 +157,13 @@ public class Parser {
         return null;
     }
 
-    private ExprNode comparison() {
-        ExprNode e1 = multiplier();
+    private ExprNode compareExpression() {
+        ExprNode e1 = AddSubExpression();
         Token t;
         while (true) {
-            t = match(TokenType.MORE, TokenType.LESS, TokenType.MOREEQUAL, TokenType.LESSEQUAL);
+            t = match(TokenType.MORE, TokenType.LESS, TokenType.TWOEQUAL, TokenType.MOREEQUAL, TokenType.LESSEQUAL, TokenType.NOTEQUAL);
             if (t != null) {
-                ExprNode e2 = multiplier();
+                ExprNode e2 = AddSubExpression();
                 e1 = new BinOpNode(t, e1, e2);
                 continue;
             }
@@ -189,7 +172,7 @@ public class Parser {
         return e1;
     }
 
-    private ExprNode parseCondition() {
-        return parse();
+    private ExprNode parseStatement() {
+        return compareExpression();
     }
 }
