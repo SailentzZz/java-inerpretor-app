@@ -9,10 +9,6 @@ public final class NumberNode extends ExprNode {
         return this.number;
     }
 
-    public void setNumber(Token var1) {
-        this.number = var1;
-    }
-
     public NumberNode(Token number) {
         this.number = number;
     }

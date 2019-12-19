@@ -11,24 +11,12 @@ public final class BinOpNode extends ExprNode {
         return this.op;
     }
 
-    public void setOp(Token var1) {
-        this.op = var1;
-    }
-
     public ExprNode getLeft() {
         return this.left;
     }
 
-    public void setLeft(ExprNode var1) {
-        this.left = var1;
-    }
-
     public ExprNode getRight() {
         return this.right;
-    }
-
-    public void setRight(ExprNode var1) {
-        this.right = var1;
     }
 
     public BinOpNode(Token op, ExprNode left, ExprNode right) {

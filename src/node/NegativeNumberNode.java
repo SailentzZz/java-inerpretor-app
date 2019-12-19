@@ -7,10 +7,6 @@ public final class NegativeNumberNode extends ExprNode {
         return this.number;
     }
 
-    public void setNumber(ExprNode var1) {
-        this.number = var1;
-    }
-
     public NegativeNumberNode(ExprNode number) {
         this.number = number;
     }

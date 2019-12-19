@@ -7,30 +7,18 @@ import java.util.List;
 public final class WhileNode extends StmtNode {
     private Token token;
     private ExprNode condition;
-    private List body;
+    private List<StmtNode> body;
 
     public Token getToken() {
         return this.token;
-    }
-
-    public void setToken(Token var1) {
-        this.token = var1;
     }
 
     public ExprNode getCondition() {
         return this.condition;
     }
 
-    public void setCondition(ExprNode var1) {
-        this.condition = var1;
-    }
-
-    public List getBody() {
+    public List<StmtNode> getBody() {
         return this.body;
-    }
-
-    public void setBody(List var1) {
-        this.body = var1;
     }
 
     public WhileNode(Token token, ExprNode condition, List body) {

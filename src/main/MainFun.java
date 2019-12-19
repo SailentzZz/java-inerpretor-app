@@ -29,6 +29,6 @@ public class MainFun {
             Parser p = new Parser(tokens);
             List<StmtNode> numbers = p.parseProgramm();
             Map<String, Integer> map = new HashMap<>();
-            new Interpreter().evalProgramm(numbers, map);
+            new Interpreter().evalProgram(numbers, map);
     }
 }

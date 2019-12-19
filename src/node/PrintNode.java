@@ -10,16 +10,8 @@ public final class PrintNode extends StmtNode {
         return this.token;
     }
 
-    public void setToken(Token var1) {
-        this.token = var1;
-    }
-
     public ExprNode getBody() {
         return this.body;
-    }
-
-    public void setBody(ExprNode var1) {
-        this.body = var1;
     }
 
     public PrintNode(Token token, ExprNode body) {

@@ -11,10 +11,11 @@ public final class Interpreter {
             if (n instanceof VarNode) return vars.get(((VarNode) n).getId().getText());
             if (n instanceof NegativeNumberNode) return -1 * eval(((NegativeNumberNode) n).getNumber(), vars);
             if (n instanceof BinOpNode) {
-                int l = eval(((BinOpNode) n).getLeft(), vars);
-                int r = eval(((BinOpNode) n).getRight(), vars);
+                BinOpNode binOpNode = (BinOpNode) n;
+                int l = eval(binOpNode.getLeft(), vars);
+                int r = eval(binOpNode.getRight(), vars);
 
-                switch (((BinOpNode) n).getOp().getType()) {
+                switch (binOpNode.getOp().getType()) {
                     case ADD:
                         return l + r;
                     case SUB:
@@ -23,8 +24,8 @@ public final class Interpreter {
                         return l * r;
                     case DIV:
                         if (r == 0) {
-                            throw new ArithmeticException("Деление на ноль в строке - " + ((BinOpNode) n).getOp().getLine() +
-                                    ", позиция - " + ((BinOpNode) n).getOp().getColumn());
+                            throw new ArithmeticException("Деление на ноль в строке - " + binOpNode.getOp().getLine() +
+                                    ", позиция - " + binOpNode.getOp().getColumn());
                         } else {
                             return l / r;
                         }
@@ -33,12 +34,13 @@ public final class Interpreter {
             }
         }
 
-        throw new IllegalArgumentException("Неверный литерал в строке - " + ((BinOpNode) n).getOp().getLine() +
-                ", позиция - " + ((BinOpNode) n).getOp().getColumn());
+        BinOpNode binOpNode = (BinOpNode) n;
+        throw new IllegalArgumentException("Неверный литерал в строке - " + binOpNode.getOp().getLine() +
+                ", позиция - " + binOpNode.getOp().getColumn());
 
     }
 
-    public void evalProgramm(List<StmtNode> program, Map<String, Integer> vars) {
+    public void evalProgram(List<StmtNode> program, Map<String, Integer> vars) {
         for (StmtNode s : program) {
             evalStatement(s, vars);
         }
@@ -47,19 +49,22 @@ public final class Interpreter {
     private void evalStatement(StmtNode s, Map<String, Integer> vars) {
         if (s != null) {
             if (s instanceof WhileNode) {
-                while (evalCondition((WhileNode) s, vars)) {
-                    for (Object stmtNode : ((WhileNode) s).getBody()) {
-                        evalStatement((StmtNode) stmtNode, vars);
+                WhileNode whileNode = (WhileNode) s;
+                while (evalCondition(whileNode, vars)) {
+                    for (StmtNode stmtNode : whileNode.getBody()) {
+                        evalStatement(stmtNode, vars);
                     }
                 }
             }
 
             if (s instanceof PrintNode) {
-                System.out.println(eval(((PrintNode) s).getBody(), vars));
+                PrintNode printNode = (PrintNode) s;
+                System.out.println(eval(printNode.getBody(), vars));
             }
 
             if (s instanceof VariableNode) {
-                vars.put(((VariableNode) s).getName().getText(), eval(((VariableNode) s).getBody(), vars));
+                VariableNode variableNode = (VariableNode) s;
+                vars.put(variableNode.getName().getText(), eval(((VariableNode) s).getBody(), vars));
             }
         }
     }
@@ -68,9 +73,10 @@ public final class Interpreter {
             ExprNode condition = s.getCondition();
             if (condition != null) {
                 if (condition instanceof BinOpNode) {
-                    int p1 = eval(((BinOpNode) condition).getLeft(), vars);
-                    int p2 = eval(((BinOpNode) condition).getRight(), vars);
-                    switch (((BinOpNode) condition).getOp().getType()) {
+                    BinOpNode binOpNode = (BinOpNode) condition;
+                    int p1 = eval(binOpNode.getLeft(), vars);
+                    int p2 = eval(binOpNode.getRight(), vars);
+                    switch (binOpNode.getOp().getType()) {
                         case MORE:
                             return p1 > p2;
                         case LESS:
@@ -91,7 +97,7 @@ public final class Interpreter {
                 }
             }
 
-        throw new RuntimeException("Ожидалось условие в цикле while." +
+            throw new RuntimeException("Ожидалось условие в цикле while." +
                 " Строка - " + s.getToken().getLine() +
                 " Столбец - " + s.getToken().getColumn());
     }

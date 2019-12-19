@@ -9,10 +9,6 @@ public final class VarNode extends ExprNode {
         return this.id;
     }
 
-    public void setId(Token var1) {
-        this.id = var1;
-    }
-
     public VarNode(Token id) {
         this.id = id;
     }

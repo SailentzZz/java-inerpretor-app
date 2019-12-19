@@ -10,16 +10,8 @@ public final class VariableNode extends StmtNode {
         return this.name;
     }
 
-    public void setName(Token var1) {
-        this.name = var1;
-    }
-
     public ExprNode getBody() {
         return this.body;
-    }
-
-    public void setBody(ExprNode var1) {
-        this.body = var1;
     }
 
     public VariableNode(Token name, ExprNode body) {
